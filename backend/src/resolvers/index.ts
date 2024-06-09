@@ -8,5 +8,3 @@ export const resolvers = {
     },
   },
 };
-
-let tree = "hhk"
