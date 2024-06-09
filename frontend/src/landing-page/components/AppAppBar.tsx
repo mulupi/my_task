@@ -75,40 +75,7 @@ export default function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 size="small"
                 onClick={() => scrollToSection('features')}
               >
-                Features
-              </Button>
-              <Button
-                variant="text"
-                color="info"
-                size="small"
-                onClick={() => scrollToSection('testimonials')}
-              >
-                Testimonials
-              </Button>
-              <Button
-                variant="text"
-                color="info"
-                size="small"
-                onClick={() => scrollToSection('highlights')}
-              >
-                Highlights
-              </Button>
-              <Button
-                variant="text"
-                color="info"
-                size="small"
-                onClick={() => scrollToSection('pricing')}
-              >
-                Pricing
-              </Button>
-              <Button
-                variant="text"
-                color="info"
-                size="small"
-                onClick={() => scrollToSection('faq')}
-                sx={{ minWidth: 0 }}
-              >
-                FAQ
+                Home
               </Button>
             </Box>
           </Box>
@@ -141,18 +108,8 @@ export default function AppAppBar({ mode, toggleColorMode }: AppAppBarProps) {
                 </Box>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem onClick={() => scrollToSection('features')}>
-                  Features
+                  Home
                 </MenuItem>
-                <MenuItem onClick={() => scrollToSection('testimonials')}>
-                  Testimonials
-                </MenuItem>
-                <MenuItem onClick={() => scrollToSection('highlights')}>
-                  Highlights
-                </MenuItem>
-                <MenuItem onClick={() => scrollToSection('pricing')}>
-                  Pricing
-                </MenuItem>
-                <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
               </Box>
             </Drawer>
           </Box>
