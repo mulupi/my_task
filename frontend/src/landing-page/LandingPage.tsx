@@ -6,7 +6,7 @@ import Divider from '@mui/material/Divider';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import AppAppBar from './components/AppAppBar';
 import LogoCollection from './components/LogoCollection';
-import Testimonials from './components/Testimonials';
+import Testimonials from './components/Books';
 
 export default function LandingPage() {
   const [mode, setMode] = React.useState<PaletteMode>('light');

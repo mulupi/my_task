@@ -19,7 +19,6 @@ function App() {
       loading
     </div>
   )
-  console.log(data)
   return (
     <div className="App">
       <LandingPage />
