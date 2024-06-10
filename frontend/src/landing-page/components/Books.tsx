@@ -15,8 +15,10 @@ import Paginate from '../../common/Paginate';
 import { Watch } from 'react-loader-spinner';
 import { BooksProps } from '../../types/common';
 import ReadingList from './ReadingList';
-import { useDispatch } from "react-redux";
-import { modifyList } from '../../redux/Actions'
+import { useDispatch, useSelector } from "react-redux";
+import { modifyList } from '../../redux/Actions';
+import { RootState } from '../../redux/store';
+import FilteredList from './FilteredList'
 
 const GET_BOOKS = gql`
   query GetBooks {
@@ -36,6 +38,7 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
   const [page, setPage] = React.useState<number>(1);
   const [books, setBooks] = React.useState<Book[]>([]);
   const [readingList, setReadingList] = React.useState<Book[]>([]);
+  const searchTerm = useSelector((state: RootState) => state.books.searchTerm)
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     event.preventDefault();
     setPage(value);
@@ -43,12 +46,12 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
 
   React.useEffect(() => {
     data && setBooks(Paginate(data.books, page, limit))
-  }, [data, page])
+  }, [data, page]);
 
   React.useEffect(() => {
     setListItems(readingList.length)
     dispatch(modifyList(readingList))
-  }, [readingList])
+  }, [readingList]);
 
   const bookOnList = (selectedBook: Book): boolean => {
     if (readingList.length > 0)
@@ -70,10 +73,6 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
     }
     const newReadingList = [...readingList.slice(0, index), ...readingList.slice(index + 1)];
     setReadingList(newReadingList);
-    // setShowReadList(!showReadList);
-    // setTimeout(() => {
-    //   setShowReadList(showReadList);
-    // }, 1)
   }
 
   if (loading) return (
@@ -91,7 +90,12 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
 
   if (showReadList)
     return (
-      <ReadingList removeFromList={removeFromList} />
+      <ReadingList removeFromList={removeFromList} setShowReadList={setShowReadList}/>
+    )
+
+  if (searchTerm.length > 0)
+    return (
+      <FilteredList setReadingList={setReadingList} removeFromList={removeFromList} bookOnList={bookOnList}/>
     )
 
   return (
@@ -113,10 +117,10 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
           textAlign: { sm: 'left', md: 'center' },
         }}
       >
-        <Typography component="h2" variant="h4" sx={{ color: 'text.primary' }}>
+        <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
           Ello
         </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+        <Typography variant="body1" sx={{ color: 'ello2.light' }}>
           View our book collection
         </Typography>
       </Box>
@@ -140,7 +144,7 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
                   alt="image"
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <Typography gutterBottom variant="h5" component="div" color="ello.light">
                     {book.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -156,7 +160,7 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
                   (
                     <Button
                       size="small"
-                      color="warning"
+                      sx={{ color: 'ello2.contrastText' }}
                       onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
                     >
                       Remove from reading list
@@ -165,7 +169,7 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
                   (
                     <Button
                       size="small"
-                      color="primary"
+                      sx={{ color: 'ello2.light' }}
                       onClick={(e) => { e.preventDefault(); setReadingList([...readingList, books[index]]) }}
                     >
                       Add to reading list
