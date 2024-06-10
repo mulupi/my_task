@@ -10,8 +10,13 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
-import { Book } from '../../types/common'
-import Paginate from '../../common/Paginate'
+import { Book } from '../../types/common';
+import Paginate from '../../common/Paginate';
+import { Watch } from 'react-loader-spinner';
+import { BooksProps } from '../../types/common';
+import ReadingList from './ReadingList';
+import { useDispatch } from "react-redux";
+import { modifyList } from '../../redux/Actions'
 
 const GET_BOOKS = gql`
   query GetBooks {
@@ -25,30 +30,73 @@ const GET_BOOKS = gql`
 
 const limit: number = 9
 
-export default function Books() {
+export default function Books({ setListItems, showReadList, setShowReadList }: BooksProps) {
+  const dispatch = useDispatch();
   const { loading, data } = useQuery(GET_BOOKS);
   const [page, setPage] = React.useState<number>(1);
   const [books, setBooks] = React.useState<Book[]>([]);
+  const [readingList, setReadingList] = React.useState<Book[]>([]);
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    event.preventDefault();
     setPage(value);
-    console.log(value)
   };
 
   React.useEffect(() => {
     data && setBooks(Paginate(data.books, page, limit))
   }, [data, page])
 
-  if (loading) return (
-    <div>
-      loading
-    </div>
-  )
+  React.useEffect(() => {
+    setListItems(readingList.length)
+    dispatch(modifyList(readingList))
+  }, [readingList])
 
-  // data && setBooks(Paginate(data.books, page, 10))
+  const bookOnList = (selectedBook: Book): boolean => {
+    if (readingList.length > 0)
+      for (let book: number = 0; book < readingList.length; book++) {
+        if (readingList[book].title === selectedBook.title && readingList[book].author === selectedBook.author)
+          return true
+      }
+    return false
+  }
+
+  const removeFromList = (selectedBook: Book): void => {
+    let index = 0
+    for (let book: number = 0; book < readingList.length; book++) {
+      if (readingList[book].title === selectedBook.title && readingList[book].author === selectedBook.author) {
+        //found book
+        index = book
+        break;
+      }
+    }
+    const newReadingList = [...readingList.slice(0, index), ...readingList.slice(index + 1)];
+    setReadingList(newReadingList);
+    // setShowReadList(!showReadList);
+    // setTimeout(() => {
+    //   setShowReadList(showReadList);
+    // }, 1)
+  }
+
+  if (loading) return (
+    <Watch
+      visible={true}
+      height="80"
+      width="80"
+      radius="48"
+      color="#4fa94d"
+      ariaLabel="watch-loading"
+      wrapperStyle={{}}
+      wrapperClass=""
+    />
+  );
+
+  if (showReadList)
+    return (
+      <ReadingList removeFromList={removeFromList} />
+    )
 
   return (
     <Container
-      id="testimonials"
+      id="books"
       sx={{
         pt: { xs: 4, sm: 12 },
         pb: { xs: 8, sm: 16 },
@@ -69,7 +117,7 @@ export default function Books() {
           Ello
         </Typography>
         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-          View our books collection
+          View our book collection
         </Typography>
       </Box>
       <Grid container spacing={2}>
@@ -104,9 +152,26 @@ export default function Books() {
                 </CardContent>
               </CardActionArea>
               <CardActions>
-                <Button size="small" color="primary">
-                  Add to reading list
-                </Button>
+                {bookOnList(books[index]) ?
+                  (
+                    <Button
+                      size="small"
+                      color="warning"
+                      onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
+                    >
+                      Remove from reading list
+                    </Button>
+                  ) :
+                  (
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={(e) => { e.preventDefault(); setReadingList([...readingList, books[index]]) }}
+                    >
+                      Add to reading list
+                    </Button>)
+                }
+
               </CardActions>
             </Card>
           </Grid>
