@@ -27,11 +27,12 @@ declare module '@mui/material/styles' {
 }
 
 export default function LandingPage() {
-  const [mode, setMode] = React.useState<PaletteMode>('light');
   const defaultTheme = createTheme(
     {
       palette: {
-        mode,
+        success: {
+          main: "#FABD33"
+        },
         ello: {
           main: '#5ACCCC',
           light: '#335C6E',

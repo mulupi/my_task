@@ -90,12 +90,12 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
 
   if (showReadList)
     return (
-      <ReadingList removeFromList={removeFromList} setShowReadList={setShowReadList}/>
+      <ReadingList removeFromList={removeFromList} setShowReadList={setShowReadList} />
     )
 
   if (searchTerm.length > 0)
     return (
-      <FilteredList setReadingList={setReadingList} removeFromList={removeFromList} bookOnList={bookOnList}/>
+      <FilteredList setReadingList={setReadingList} removeFromList={removeFromList} bookOnList={bookOnList} />
     )
 
   return (
@@ -124,67 +124,86 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
           View our book collection
         </Typography>
       </Box>
-      <Grid container spacing={2}>
-        {data && books.map((book: Book, index: number) => (
-          <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex' }}>
-            <Card
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                flexGrow: 1,
-                p: 1,
-              }}
-            >
-              <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={book.coverPhotoURL}
-                  alt="image"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div" color="ello.light">
-                    {book.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    by {book.author}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Reading level {book.readingLevel}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions>
-                {bookOnList(books[index]) ?
-                  (
-                    <Button
-                      size="small"
-                      sx={{ color: 'ello2.contrastText' }}
-                      onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
-                    >
-                      Remove from reading list
-                    </Button>
-                  ) :
-                  (
-                    <Button
-                      size="small"
-                      sx={{ color: 'ello2.light' }}
-                      onClick={(e) => { e.preventDefault(); setReadingList([...readingList, books[index]]) }}
-                    >
-                      Add to reading list
-                    </Button>)
-                }
+      {data?.books.length > 0 ? (
 
-              </CardActions>
-            </Card>
+        <>
+          <Grid container spacing={2}>
+            {data && books.map((book: Book, index: number) => (
+              <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex' }}>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    flexGrow: 1,
+                    p: 1,
+                  }}
+                >
+                  <CardActionArea>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={book.coverPhotoURL}
+                      alt="image"
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div" color="ello.light">
+                        {book.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        by {book.author}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Reading level {book.readingLevel}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions>
+                    {bookOnList(books[index]) ?
+                      (
+                        <Button
+                          size="small"
+                          sx={{ color: 'ello2.contrastText' }}
+                          onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
+                        >
+                          Remove from reading list
+                        </Button>
+                      ) :
+                      (
+                        <Button
+                          size="small"
+                          sx={{ color: 'ello2.light' }}
+                          onClick={(e) => { e.preventDefault(); setReadingList([...readingList, books[index]]) }}
+                        >
+                          Add to reading list
+                        </Button>)
+                    }
+
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-      <Stack spacing={2}>
-        <Typography>Page: {page}</Typography>
-        <Pagination count={data.books.length > 0 ? Math.ceil(data.books.length / limit) : 1} page={page} onChange={handleChange} />
-      </Stack>
+          <Stack spacing={2}>
+            <Typography>Page: {page}</Typography>
+            <Pagination count={Math.ceil(data.books.length / limit)} page={page} onChange={handleChange} />
+          </Stack>
+        </>
+      ) : (
+        <Box
+          sx={{
+            width: { sm: '100%', md: '60%' },
+            textAlign: { sm: 'left', md: 'center' },
+          }}
+        >
+          <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
+            Ooops!!
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'ello2.light' }}>
+            No books in our library
+          </Typography>
+        </Box>
+      )}
     </Container>
   );
 }

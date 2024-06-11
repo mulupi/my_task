@@ -81,10 +81,10 @@ export default function FilteredList({ setReadingList, removeFromList, bookOnLis
                     textAlign: { sm: 'left', md: 'center' },
                 }}
             >
-                <Typography component="h2" variant="h4" sx={{ color: 'text.primary' }}>
+                <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
                     Ello
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ color: 'ello2.light' }}>
                     Search Results
                 </Typography>
             </Box>
@@ -160,10 +160,10 @@ export default function FilteredList({ setReadingList, removeFromList, bookOnLis
                             textAlign: { sm: 'left', md: 'center' },
                         }}
                     >
-                        <Typography component="h2" variant="h4" sx={{ color: 'text.primary' }}>
+                        <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
                             Ooops!!
                         </Typography>
-                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                        <Typography variant="body1" sx={{ color: 'ello2.light' }}>
                             No books with title that match your filter
                         </Typography>
                         <Button
