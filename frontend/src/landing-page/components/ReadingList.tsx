@@ -48,10 +48,10 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                     textAlign: { sm: 'left', md: 'center' },
                 }}
             >
-                <Typography component="h2" variant="h4" sx={{ color: 'text.primary' }}>
+                <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
                     Ello
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ color: 'ello2.light' }}>
                     View the reading list
                 </Typography>
             </Box>
@@ -114,10 +114,10 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                             textAlign: { sm: 'left', md: 'center' },
                         }}
                     >
-                        <Typography component="h2" variant="h4" sx={{ color: 'text.primary' }}>
+                        <Typography component="h2" variant="h4" sx={{ color: 'ello.main' }}>
                             Ooops!!
                         </Typography>
-                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                        <Typography variant="body1" sx={{ color: 'ello2.light' }}>
                             No books on the reading list
                         </Typography>
                         <Button

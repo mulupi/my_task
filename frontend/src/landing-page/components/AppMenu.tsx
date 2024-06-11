@@ -172,7 +172,7 @@ export default function TopAppBar({ listItems, setShowReadList, showReadList }: 
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit" onClick={() => { setShowReadList(!showReadList) }}>
               <Badge badgeContent={listItems} color="success">
-                <FormatListNumberedRtlIcon />
+                <FormatListNumberedRtlIcon /> 
               </Badge>
             </IconButton>
             <IconButton
