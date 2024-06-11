@@ -11,11 +11,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import FormatListNumberedRtlIcon from '@mui/icons-material/FormatListNumberedRtl';
-import { MenuProps } from '../../types/common'
+import { MenuProps } from '../../types/common';
+import { modifySearch } from '../../redux/Actions';
+import { useDispatch } from "react-redux";
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -58,6 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopAppBar({ listItems, setShowReadList, showReadList }: MenuProps) {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -121,8 +122,8 @@ export default function TopAppBar({ listItems, setShowReadList, showReadList }: 
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+      <MenuItem onClick={() => {setShowReadList(!showReadList) }}>
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit" >
           <Badge badgeContent={listItems} color="error">
             <FormatListNumberedRtlIcon />
           </Badge>
@@ -146,13 +147,14 @@ export default function TopAppBar({ listItems, setShowReadList, showReadList }: 
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{ bgcolor: `ello.light`}} >
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
+            onClick={() => { setShowReadList(false) }}
           >
             Ello
           </Typography>
@@ -163,6 +165,7 @@ export default function TopAppBar({ listItems, setShowReadList, showReadList }: 
             <StyledInputBase
               placeholder="Search by title…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={(e) => { e.preventDefault(); dispatch(modifySearch(e.target.value)) }}
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />

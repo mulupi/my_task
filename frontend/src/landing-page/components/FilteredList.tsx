@@ -9,26 +9,59 @@ import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { Button, CardActionArea, CardActions } from '@mui/material';
+import { gql, useQuery } from '@apollo/client';
 import { Book } from '../../types/common';
 import Paginate from '../../common/Paginate';
-import { ReadingListProps } from '../../types/common';
-import { useSelector } from "react-redux";
+import { Watch } from 'react-loader-spinner';
+import { FilteredListProps } from '../../types/common';
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from '../../redux/store';
+import { modifySearch } from '../../redux/Actions';
+
+const FILTER_BOOKS = gql`
+  query FilterBooks($title: String!) {
+    book(title: $title) {
+        title,
+        author,
+        readingLevel,
+        coverPhotoURL
+  }
+}`
 
 const limit: number = 9
 
-export default function ReadingList({ removeFromList, setShowReadList }: ReadingListProps) {
+export default function FilteredList({ setReadingList, removeFromList, bookOnList }: FilteredListProps) {
+    const dispatch = useDispatch();
+    const searchTerm = useSelector((state: RootState) => state.books.searchTerm)
+    const { loading, data } = useQuery(FILTER_BOOKS, {
+        variables: { title: searchTerm },
+    });
     const [page, setPage] = React.useState<number>(1);
     const [books, setBooks] = React.useState<Book[]>([]);
     const bookList = useSelector((state: RootState) => state.books.books)
+
     const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
         event.preventDefault();
         setPage(value);
     };
 
     React.useEffect(() => {
-        setBooks(Paginate(bookList, page, limit))
-    }, [page, bookList])
+        data && setBooks(Paginate(data.book, page, limit))
+    }, [data, page]);
+
+    if (loading) return (
+        <Watch
+            visible={true}
+            height="80"
+            width="80"
+            radius="48"
+            color="#4fa94d"
+            ariaLabel="watch-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+        />
+    );
+
     return (
         <Container
             id="books"
@@ -52,14 +85,14 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                     Ello
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                    View the reading list
+                    Search Results
                 </Typography>
             </Box>
-            {
-                books.length > 0 ? (
+            {data.book.length > 0 ?
+                (
                     <>
                         <Grid container spacing={2}>
-                            {books.map((book: Book, index: number) => (
+                            {data && books.map((book: Book, index: number) => (
                                 <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex' }}>
                                     <Card
                                         sx={{
@@ -90,13 +123,26 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                                             </CardContent>
                                         </CardActionArea>
                                         <CardActions>
-                                            <Button
-                                                size="small"
-                                                sx={{ color: 'ello2.contrastText' }}
-                                                onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
-                                            >
-                                                Remove from reading list
-                                            </Button>
+                                            {bookOnList(books[index]) ?
+                                                (
+                                                    <Button
+                                                        size="small"
+                                                        sx={{ color: 'ello2.contrastText' }}
+                                                        onClick={(e) => { e.preventDefault(); removeFromList(books[index]) }}
+                                                    >
+                                                        Remove from reading list
+                                                    </Button>
+                                                ) :
+                                                (
+                                                    <Button
+                                                        size="small"
+                                                        sx={{ color: 'ello2.light' }}
+                                                        onClick={(e) => { e.preventDefault(); setReadingList([...bookList, books[index]]) }}
+                                                    >
+                                                        Add to reading list
+                                                    </Button>)
+                                            }
+
                                         </CardActions>
                                     </Card>
                                 </Grid>
@@ -104,7 +150,7 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                         </Grid>
                         <Stack spacing={2}>
                             <Typography>Page: {page}</Typography>
-                            <Pagination count={books.length > 0 ? Math.ceil(bookList.length / limit) : 1} page={page} onChange={handleChange} />
+                            <Pagination count={Math.ceil(data.book.length / limit)} page={page} onChange={handleChange} />
                         </Stack>
                     </>
                 ) : (
@@ -118,19 +164,18 @@ export default function ReadingList({ removeFromList, setShowReadList }: Reading
                             Ooops!!
                         </Typography>
                         <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                            No books on the reading list
+                            No books with title that match your filter
                         </Typography>
                         <Button
                             size="small"
                             sx={{ color: 'ello2.contrastText' }}
-                            onClick={(e) => { e.preventDefault(); setShowReadList(false) }}
+                            onClick={(e) => { e.preventDefault(); dispatch(modifySearch("")) }}
                         >
                             Go back
                         </Button>
                     </Box>
                 )
             }
-
         </Container>
     );
 }
