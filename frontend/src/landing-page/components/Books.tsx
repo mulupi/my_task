@@ -51,7 +51,7 @@ export default function Books({ setListItems, showReadList, setShowReadList }: B
   React.useEffect(() => {
     setListItems(readingList.length)
     dispatch(modifyList(readingList))
-  }, [readingList]);
+  }, [readingList, dispatch, setListItems]);
 
   const bookOnList = (selectedBook: Book): boolean => {
     if (readingList.length > 0)
