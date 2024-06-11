@@ -88,7 +88,7 @@ export default function FilteredList({ setReadingList, removeFromList, bookOnLis
                     Search Results
                 </Typography>
             </Box>
-            {data.book.length > 0 ?
+            {data?.book.length > 0 ?
                 (
                     <>
                         <Grid container spacing={2}>
